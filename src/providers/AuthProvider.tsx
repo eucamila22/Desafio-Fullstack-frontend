@@ -12,11 +12,31 @@ interface iAuthContextType {
     clientId: string | null
     setClientId: (clientId: string | null) => void
 }
+
 interface iAuthContextValues {
     singIn: (data: iLogin) => void
     loading: boolean
     formRegister: (formData: iRegisterFormValues) => void
     clientId: iAuthContextType | null
+    client: iClient | undefined
+    handleLogout: () => void
+    contacts: iContacts[]
+}
+
+interface iClient {
+    id: string
+    name: string
+    email: string
+    phone: string
+    contacts: iContacts[]
+}
+interface iContacts {
+    client: {
+        id: string
+        full_name: string
+        email: string
+        phone: string
+    }
 }
 
 export const AuthContext = createContext<iAuthContextValues>({} as iAuthContextValues)
@@ -25,6 +45,8 @@ export const AuthProvider = ({ children }: iAuthProviderProps) => {
     const navigate = useNavigate()
     const [clientId, setClientId] = useState<iAuthContextType | null>(null)
     const [loading, setLoading] = useState(true)
+    const [client, setClient] = useState<iClient>()
+    const [contacts, setContacts] = useState<iContacts[]>([])
 
     useEffect(() => {
         const token = localStorage.getItem('your-personal-schedule:token')
@@ -38,6 +60,47 @@ export const AuthProvider = ({ children }: iAuthProviderProps) => {
         setLoading(false)
     }, [])
 
+    useEffect(() => {
+        const fetchClientData = async () => {
+            const id = localStorage.getItem('IDClient:ID')
+            if (id) {
+                try {
+                    const res = await api.get<iClient>(`clients/${id}`)
+                    setClient(res.data)
+                } catch (error) {
+                    console.log('Error getting customer data:', error)
+                }
+            }
+        }
+
+        fetchClientData()
+    }, [])
+
+    useEffect(() => {
+        const fetchContactsData = async () => {
+            const id = localStorage.getItem('IDClient:ID')
+            if (id) {
+                try {
+                    const res = await api.get<iContacts[]>(`clients/${id}`)
+                    const filteredContacts = res.data.filter(
+                        (contact) => contact.client && contact.client.id === id
+                    )
+                    console.log(filteredContacts)
+                    setContacts(filteredContacts)
+                } catch (error) {
+                    console.log('Error getting customer data:', error)
+                }
+            }
+        }
+
+        fetchContactsData()
+    }, [])
+
+    const handleLogout = () => {
+        localStorage.removeItem('your-personal-schedule:token')
+        localStorage.removeItem('IDClient:ID')
+    }
+
     const singIn = async (data: iLogin) => {
         try {
             const res = await api.post('/login', data)
@@ -47,8 +110,6 @@ export const AuthProvider = ({ children }: iAuthProviderProps) => {
             const tokenBody = JSON.parse(atob(tokenParts[1]))
 
             const id = tokenBody.id
-
-            console.log(id)
 
             api.defaults.headers.common.authorization = `Bearer ${token}`
             localStorage.setItem('your-personal-schedule:token', token)
@@ -74,7 +135,9 @@ export const AuthProvider = ({ children }: iAuthProviderProps) => {
     }
 
     return (
-        <AuthContext.Provider value={{ singIn, loading, formRegister, clientId }}>
+        <AuthContext.Provider
+            value={{ singIn, loading, formRegister, clientId, client, handleLogout, contacts }}
+        >
             {children}
         </AuthContext.Provider>
     )

@@ -25,7 +25,6 @@ const Login = () => {
                 <button type='submit'>Login</button>
 
                 <p>You are not registered?</p>
-                {/* <button type='submit'>Register here</button> */}
                 <Link to={'/register'}>Register here</Link>
             </form>
         </main>
