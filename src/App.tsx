@@ -1,4 +1,5 @@
 import { AuthProvider } from './providers/AuthProvider'
+import { ContactProvider } from './providers/ContactProvider'
 import RoutesMain from './routes'
 import GlobalStyle from './styles/GlobalStyle'
 
@@ -7,7 +8,9 @@ const App = () => {
         <>
             <GlobalStyle />
             <AuthProvider>
-                <RoutesMain />
+                <ContactProvider>
+                    <RoutesMain />
+                </ContactProvider>
             </AuthProvider>
         </>
     )

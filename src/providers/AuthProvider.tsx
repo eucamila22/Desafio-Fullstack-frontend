@@ -16,27 +16,27 @@ interface iAuthContextType {
 interface iAuthContextValues {
     singIn: (data: iLogin) => void
     loading: boolean
+    clientLoaded: boolean
     formRegister: (formData: iRegisterFormValues) => void
     clientId: iAuthContextType | null
     client: iClient | undefined
     handleLogout: () => void
-    contacts: iContacts[]
+    deleteClient: () => Promise<void>
 }
 
-interface iClient {
+export interface iClient {
     id: string
     name: string
     email: string
     phone: string
     contacts: iContacts[]
 }
-interface iContacts {
-    client: {
-        id: string
-        full_name: string
-        email: string
-        phone: string
-    }
+export interface iContacts {
+    client: string
+    id: string
+    full_name: string
+    email: string
+    phone: string
 }
 
 export const AuthContext = createContext<iAuthContextValues>({} as iAuthContextValues)
@@ -44,9 +44,9 @@ export const AuthContext = createContext<iAuthContextValues>({} as iAuthContextV
 export const AuthProvider = ({ children }: iAuthProviderProps) => {
     const navigate = useNavigate()
     const [clientId, setClientId] = useState<iAuthContextType | null>(null)
-    const [loading, setLoading] = useState(true)
     const [client, setClient] = useState<iClient>()
-    const [contacts, setContacts] = useState<iContacts[]>([])
+    const [loading, setLoading] = useState(true)
+    const [clientLoaded, setClientLoaded] = useState(false)
 
     useEffect(() => {
         const token = localStorage.getItem('your-personal-schedule:token')
@@ -76,26 +76,6 @@ export const AuthProvider = ({ children }: iAuthProviderProps) => {
         fetchClientData()
     }, [])
 
-    useEffect(() => {
-        const fetchContactsData = async () => {
-            const id = localStorage.getItem('IDClient:ID')
-            if (id) {
-                try {
-                    const res = await api.get<iContacts[]>(`clients/${id}`)
-                    const filteredContacts = res.data.filter(
-                        (contact) => contact.client && contact.client.id === id
-                    )
-                    console.log(filteredContacts)
-                    setContacts(filteredContacts)
-                } catch (error) {
-                    console.log('Error getting customer data:', error)
-                }
-            }
-        }
-
-        fetchContactsData()
-    }, [])
-
     const handleLogout = () => {
         localStorage.removeItem('your-personal-schedule:token')
         localStorage.removeItem('IDClient:ID')
@@ -116,6 +96,8 @@ export const AuthProvider = ({ children }: iAuthProviderProps) => {
             localStorage.setItem('IDClient:ID', id)
 
             setClientId(id)
+            setClientLoaded(true)
+
             navigate('/dashboard')
         } catch (error) {
             console.error(error)
@@ -126,17 +108,42 @@ export const AuthProvider = ({ children }: iAuthProviderProps) => {
         try {
             setLoading(true)
             const res = await api.post('/clients', formData)
-            console.log(res.data)
-
             navigate('/')
+            return res
         } catch (error) {
             console.error(error)
         }
     }
 
+    const deleteClient = async () => {
+        try {
+            const id = localStorage.getItem('IDClient:ID')
+            const token = localStorage.getItem('your-personal-schedule:token')
+
+            await api.delete(`/clients/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+            handleLogout()
+            navigate('/')
+        } catch (error) {
+            console.error('Error deleting client:', error)
+        }
+    }
+
     return (
         <AuthContext.Provider
-            value={{ singIn, loading, formRegister, clientId, client, handleLogout, contacts }}
+            value={{
+                singIn,
+                loading,
+                formRegister,
+                clientId,
+                client,
+                handleLogout,
+                clientLoaded,
+                deleteClient,
+            }}
         >
             {children}
         </AuthContext.Provider>
