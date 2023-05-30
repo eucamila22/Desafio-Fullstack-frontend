@@ -2,12 +2,25 @@ import { Link } from 'react-router-dom'
 import useAuth from '../../hooks/useAuth'
 import useContact from '../../hooks/useContact'
 import { useForm } from 'react-hook-form'
-import { useState } from 'react'
 import { iRegisterFormNewContactValues } from '../../providers/ContactProvider'
+import ModalAuth from '../../hooks/useModal'
+import { ModalDefault } from '../../components/modalDefault'
 
 const Dashboard = () => {
     const { client, handleLogout, deleteClient } = useAuth()
-    const [creatingContact, setCreatingContact] = useState(false)
+    const {
+        handleModal,
+        modalIsOpen,
+        handleModalDeleteAccount,
+        modalIsOpenDeleteAccount,
+        handleModalCreateContact,
+        modalIsOpenCreateContact,
+        setIsOpenCreateContact,
+        handleModalEditContact,
+        modalIsOpenEditContact,
+        handleModalProfileClient,
+        modalIsOpenProfileClient,
+    } = ModalAuth()
     const {
         contacts,
         editingContact,
@@ -21,7 +34,7 @@ const Dashboard = () => {
     const newContact = (data: iRegisterFormNewContactValues) => {
         handleCreateContact(data)
         reset()
-        setCreatingContact(false)
+        setIsOpenCreateContact(false)
     }
 
     const editContact = () => {
@@ -31,45 +44,57 @@ const Dashboard = () => {
 
     return (
         <>
-            <h2>Dash</h2>
-            <button onClick={deleteClient}>DELETAR CONTA</button>
-            {!creatingContact ? (
-                <button onClick={() => setCreatingContact(true)}>Criar Contato</button>
-            ) : (
-                <form onSubmit={handleSubmit(newContact)}>
-                    <label htmlFor='full_name'>Full Name</label>
-                    <input type='text' id='full_name' {...register('full_name')} />
+            <h2>Hello, {client?.name}!</h2>
 
-                    <label htmlFor='email'>E-mail</label>
-                    <input type='email' id='email' {...register('email')} />
-
-                    <label htmlFor='phone'>Phone</label>
-                    <input type='text' id='phone' {...register('phone')} />
-
-                    <button type='submit'>Salvar</button>
-                    <button type='button' onClick={() => setCreatingContact(false)}>
-                        Cancelar
-                    </button>
-                </form>
+            <button onClick={() => handleModalProfileClient()}>Profile</button>
+            {modalIsOpenProfileClient && (
+                <ModalDefault callback={() => handleModalProfileClient()} maxWidth={500}>
+                    {client ? (
+                        <ul>
+                            <li key={client.id}>
+                                <p>Name: {client.name}</p>
+                                <p>Phone: {client.phone}</p>
+                                <p>E-mail: {client.email}</p>
+                            </li>
+                        </ul>
+                    ) : (
+                        <p>Loading...</p>
+                    )}
+                    <button onClick={() => handleModalDeleteAccount()}>Delete Account</button>
+                    {modalIsOpenDeleteAccount && (
+                        <ModalDefault callback={() => handleModalDeleteAccount()} maxWidth={500}>
+                            <button onClick={deleteClient}>Yes, I'm sure!</button>
+                            <button onClick={() => handleModalDeleteAccount()}>Cancel</button>
+                        </ModalDefault>
+                    )}
+                </ModalDefault>
             )}
 
-            {client ? (
-                <ul>
-                    <li key={client.id}>
-                        <p>Id: {client.id}</p>
-                        <p>Name: {client.name}</p>
-                        <p>Phone: {client.phone}</p>
-                        <p>E-mail: {client.email}</p>
-                        <Link to='/' onClick={handleLogout}>
-                            Sair
-                        </Link>
-                    </li>
-                </ul>
-            ) : (
-                <p>Loading...</p>
+            <Link to='/' onClick={handleLogout}>
+                Sair
+            </Link>
+
+            <h2>Contacts</h2>
+            <button onClick={() => handleModalCreateContact()}>Add A New Contact</button>
+            {modalIsOpenCreateContact && (
+                <ModalDefault callback={() => handleModalCreateContact()} maxWidth={500}>
+                    <form onSubmit={handleSubmit(newContact)}>
+                        <label htmlFor='full_name'>Full Name</label>
+                        <input type='text' id='full_name' {...register('full_name')} />
+
+                        <label htmlFor='email'>E-mail</label>
+                        <input type='email' id='email' {...register('email')} />
+
+                        <label htmlFor='phone'>Phone</label>
+                        <input type='text' id='phone' {...register('phone')} />
+
+                        <button type='submit'>Save</button>
+                        <button type='button' onClick={() => handleModalCreateContact()}>
+                            Cancel
+                        </button>
+                    </form>
+                </ModalDefault>
             )}
-            
-            <h2>OUTRA PARTE</h2>
             {contacts.length > 0 ? (
                 <ul>
                     {contacts.map((elem) => (
@@ -78,48 +103,66 @@ const Dashboard = () => {
                             <p>Name: {elem.full_name}</p>
                             <p>Phone: {elem.phone}</p>
                             <p>E-mail: {elem.email}</p>
-                            <button onClick={() => handleDeleteContact(elem.id)}>Excluir</button>
-                            {editingContact && editingContact.id === elem.id && (
-                                <form key={elem.id} onSubmit={handleSubmit(editContact)}>
-                                    <input
-                                        type='text'
-                                        value={editingContact.full_name}
-                                        onChange={(e) =>
-                                            setEditingContact({
-                                                ...editingContact,
-                                                full_name: e.target.value,
-                                            })
-                                        }
-                                    />
-                                    <input
-                                        type='text'
-                                        value={editingContact.email}
-                                        onChange={(e) =>
-                                            setEditingContact({
-                                                ...editingContact,
-                                                email: e.target.value,
-                                            })
-                                        }
-                                    />
-                                    <input
-                                        type='text'
-                                        value={editingContact.phone}
-                                        onChange={(e) =>
-                                            setEditingContact({
-                                                ...editingContact,
-                                                phone: e.target.value,
-                                            })
-                                        }
-                                    />
-                                    <button type='submit'>Salvar</button>
-                                </form>
+
+                            <button onClick={() => handleModal(elem.id)}>Delete</button>
+                            {modalIsOpen && (
+                                <ModalDefault callback={() => handleModal} maxWidth={500}>
+                                    <button onClick={() => handleDeleteContact(elem.id)}>
+                                        Yes, I'm sure!
+                                    </button>
+                                    <button onClick={() => handleModal(elem.id)}>Cancel</button>
+                                </ModalDefault>
                             )}
-                            <button onClick={() => setEditingContact(elem)}>Editar</button>
+
+                            <button onClick={() => handleModalEditContact()}>Edit</button>
+                            {modalIsOpenEditContact && (
+                                <ModalDefault
+                                    callback={() => handleModalEditContact()}
+                                    maxWidth={500}
+                                >
+                                    {editingContact && editingContact.id === elem.id && (
+                                        <form key={elem.id} onSubmit={handleSubmit(editContact)}>
+                                            <input
+                                                type='text'
+                                                value={editingContact.full_name}
+                                                onChange={(e) =>
+                                                    setEditingContact({
+                                                        ...editingContact,
+                                                        full_name: e.target.value,
+                                                    })
+                                                }
+                                            />
+                                            <input
+                                                type='text'
+                                                value={editingContact.email}
+                                                onChange={(e) =>
+                                                    setEditingContact({
+                                                        ...editingContact,
+                                                        email: e.target.value,
+                                                    })
+                                                }
+                                            />
+                                            <input
+                                                type='text'
+                                                value={editingContact.phone}
+                                                onChange={(e) =>
+                                                    setEditingContact({
+                                                        ...editingContact,
+                                                        phone: e.target.value,
+                                                    })
+                                                }
+                                            />
+                                            <button type='submit'>Save</button>
+                                        </form>
+                                    )}
+                                    <button onClick={() => setEditingContact(elem)}>Edit</button>
+                                </ModalDefault>
+                            )}
                         </li>
                     ))}
                 </ul>
             ) : (
-                <p>No contacts found.</p>
+                <p>You still don't have contacts, let's add them?</p>
             )}
         </>
     )

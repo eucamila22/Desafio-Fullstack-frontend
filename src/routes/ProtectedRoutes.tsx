@@ -1,13 +1,12 @@
-import { Outlet } from "react-router-dom"
+import { Outlet } from 'react-router-dom'
 import useAuth from '../hooks/useAuth'
 
-
 export const ProtectedRoutes = () => {
-  const {loading} = useAuth()
+    const { loading } = useAuth()
 
-  if(loading) {
-    return <div>Carregando...</div>
-  }
+    if (loading) {
+        return <div>Loading...</div>
+    }
 
-  return <Outlet/>
+    return <Outlet />
 }

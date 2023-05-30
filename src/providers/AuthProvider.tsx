@@ -95,8 +95,8 @@ export const AuthProvider = ({ children }: iAuthProviderProps) => {
             localStorage.setItem('your-personal-schedule:token', token)
             localStorage.setItem('IDClient:ID', id)
 
-            setClientId(id)
             setClientLoaded(true)
+            setClientId(id)
 
             navigate('/dashboard')
         } catch (error) {

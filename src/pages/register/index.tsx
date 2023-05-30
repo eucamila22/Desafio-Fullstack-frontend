@@ -19,7 +19,6 @@ const Register = () => {
 
     const onSubmit: SubmitHandler<iRegisterFormValues> = async (formData) => {
         formRegister(formData)
-        // reset()
     }
 
     return (
