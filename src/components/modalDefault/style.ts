@@ -30,7 +30,7 @@ export const StyledModal = styled.div<iStyledModalProps>`
         opacity: 0.5;
         cursor: pointer;
         position: absolute;
-        top: 10px;
+        top: 50px;
         right: 10px;
         transition: 0.4s;
         :hover {
