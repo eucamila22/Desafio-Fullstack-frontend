@@ -23,17 +23,6 @@ export const StyledModal = styled.div<iStyledModalProps>`
         padding: 20px;
         background-color: #c6c7f7;
         border-radius: 8px;
-        border: 4px solid  #8d8fff;
+        border: 4px solid #8d8fff;
     }
-    /* .modal-close {
-        opacity: 0.5;
-        cursor: pointer;
-        position: absolute;
-        top: 50px;
-        right: 10px;
-        transition: 0.4s;
-        :hover {
-            opacity: 1;
-        }
-    } */
 `

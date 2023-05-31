@@ -1,6 +1,7 @@
 import { ReactNode, createContext, useState, useEffect } from 'react'
 import { api } from '../services/api'
 import { iContacts } from './AuthProvider'
+import { toast } from 'react-toastify'
 
 interface iContactProviderProps {
     children: ReactNode
@@ -39,9 +40,11 @@ export const ContactProvider = ({ children }: iContactProviderProps) => {
         try {
             const res = await api.post<iContacts>('contacts', data)
             const newContact = res.data
+            toast.success('Contact created successfully!')
             setContacts([...contacts, newContact])
         } catch (error) {
-            console.log('Error creating contact:', error)
+            toast.error('There was an error!')
+            console.error(error)
         }
     }
 
@@ -80,8 +83,10 @@ export const ContactProvider = ({ children }: iContactProviderProps) => {
                     contact.id === updatedContact.id ? updatedContact : contact
                 )
             )
+            toast.success('Contact successfully edited!')
         } catch (error) {
-            console.log('Error updating contact:', error)
+            toast.error('There was an error!')
+            console.error(error)
         }
     }
 
@@ -96,9 +101,10 @@ export const ContactProvider = ({ children }: iContactProviderProps) => {
             setContacts((prevContacts) =>
                 prevContacts.filter((contact) => contact.id !== contactId)
             )
-            window.location.reload()
+            toast.success('Contact Deleted Success!')
         } catch (error) {
-            console.log('Error deleting contact:', error)
+            toast.error('There was an error!')
+            console.error(error)
         }
     }
 
@@ -119,7 +125,7 @@ export const ContactProvider = ({ children }: iContactProviderProps) => {
                 editingContact,
                 setEditingContact,
                 contacts,
-                handleCreateContact
+                handleCreateContact,
             }}
         >
             {children}

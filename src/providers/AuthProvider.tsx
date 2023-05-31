@@ -2,7 +2,8 @@ import { ReactNode, createContext, useEffect, useState } from 'react'
 import { iLogin } from '../interface/login.interface'
 import { api } from '../services/api'
 import { useNavigate } from 'react-router-dom'
-import { iRegisterFormValues } from '../pages/register'
+import { iRegisterFormValues } from '../components/form/formRegister'
+import { toast } from 'react-toastify'
 
 interface iAuthProviderProps {
     children: ReactNode
@@ -97,9 +98,10 @@ export const AuthProvider = ({ children }: iAuthProviderProps) => {
 
             setClientLoaded(true)
             setClientId(id)
-
+            toast.success('Login successful!')
             navigate('/dashboard')
         } catch (error) {
+            toast.error('There was an error!')
             console.error(error)
         }
     }
@@ -108,9 +110,11 @@ export const AuthProvider = ({ children }: iAuthProviderProps) => {
         try {
             setLoading(true)
             const res = await api.post('/clients', formData)
+            toast.success('Registration successful!')
             navigate('/')
             return res
         } catch (error) {
+            toast.error('There was an error!')
             console.error(error)
         }
     }
@@ -128,7 +132,8 @@ export const AuthProvider = ({ children }: iAuthProviderProps) => {
             handleLogout()
             navigate('/')
         } catch (error) {
-            console.error('Error deleting client:', error)
+            toast.error('There was an error!')
+            console.error(error)
         }
     }
 

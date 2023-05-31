@@ -47,12 +47,12 @@ export const DivFormStyle = styled.div`
             font-size: var(--text1);
 
             :hover {
-                background-color: #8d8fff;
+                background-color: #eceaff;
                 border: 1px solid #8d8fff;
             }
 
             :focus {
-                background-color: #c6c7f7;
+                background-color: #eceaff;
             }
         }
 

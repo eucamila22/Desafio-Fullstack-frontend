@@ -28,7 +28,6 @@ export const ModalProvider = ({ children }: iProviderProps) => {
     const [modalIsOpen, setModalIsOpen] = useState<Array<boolean | undefined>>([])
     const [modalIsOpenDeleteAccount, setIsOpenDeleteAccount] = useState(false)
     const [modalIsOpenCreateContact, setIsOpenCreateContact] = useState(false)
-    // const [modalIsOpenEditContact, setIsOpenEditContact] = useState(false)
     const [modalIsOpenEditContact, setIsOpenEditContact] = useState<Array<boolean | undefined>>([])
     const [modalIsOpenProfileClient, setIsOpenProfileClient] = useState(false)
 
