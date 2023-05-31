@@ -3,8 +3,7 @@ import useAuth from '../../hooks/useAuth'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { registerSchema } from '../../schema/register.Schema'
 import { iRegister } from '../../interface/register.interface'
-import { RegisterContainer } from './style'
-import imageRegister from '../../assets/20943447.jpg'
+import { DivFormRegisterStyle } from './style'
 import { Link } from 'react-router-dom'
 
 export interface iRegisterFormValues {
@@ -25,9 +24,10 @@ const Register = () => {
     }
 
     return (
-        <RegisterContainer>
+        <DivFormRegisterStyle>
+            <h2>Register</h2>
+
             <form onSubmit={handleSubmit(onSubmit)}>
-                <h2>Register</h2>
                 <label htmlFor='name'>Name</label>
                 <input type='text' id='name' {...register('name')} />
 
@@ -42,14 +42,12 @@ const Register = () => {
 
                 <button type='submit'>Register</button>
 
-                <p>You are not Already have an account?</p>
-                <Link to={'/'}>Login here</Link>
+                <div>
+                    <p>You are not Already have an account?</p>
+                    <Link to={'/'}>Login here</Link>
+                </div>
             </form>
-
-            <div>
-                <img src={imageRegister} alt='' />
-            </div>
-        </RegisterContainer>
+        </DivFormRegisterStyle>
     )
 }
 

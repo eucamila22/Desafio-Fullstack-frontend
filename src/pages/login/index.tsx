@@ -4,8 +4,7 @@ import { loginSchema } from '../../schema/login.schema'
 import { iLogin } from '../../interface/login.interface'
 import useAuth from '../../hooks/useAuth'
 import { Link } from 'react-router-dom'
-import { LoginContainer } from './style'
-import imageLogin from '../../assets/8810413.jpg'
+import { DivFormStyle } from './style'
 
 const Login = () => {
     const { singIn } = useAuth()
@@ -14,24 +13,23 @@ const Login = () => {
     })
 
     return (
-        <LoginContainer>
-            <div>
-                <img src={imageLogin} alt='' />
-            </div>
+        <DivFormStyle>
+            <h2>Login</h2>
 
             <form onSubmit={handleSubmit(singIn)}>
-                <h2>Login</h2>
                 <label htmlFor='email'>E-mail</label>
                 <input type='email' id='email' {...register('email')} />
+                
                 <label htmlFor='password'>Password</label>
                 <input type='password' id='password' {...register('password')} />
 
                 <button type='submit'>Login</button>
-
-                <p>You are not registered?</p>
-                <Link to={'/register'}>Register here</Link>
+                <div>
+                    <p>You are not registered?</p>
+                    <Link to={'/register'}>Register here</Link>
+                </div>
             </form>
-        </LoginContainer>
+        </DivFormStyle>
     )
 }
 

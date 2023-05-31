@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form'
 import { iRegisterFormNewContactValues } from '../../providers/ContactProvider'
 import ModalAuth from '../../hooks/useModal'
 import { ModalDefault } from '../../components/modalDefault'
-import { CardContact, DashContainer, ModalContainer } from './style'
+import { CardContact, ContainerDash, DashMain, ModalContainer, NavBar } from './style'
 
 const Dashboard = () => {
     const { client, handleLogout, deleteClient } = useAuth()
@@ -44,13 +44,15 @@ const Dashboard = () => {
     }
 
     return (
-        <DashContainer>
-            <div className='container-nav'>
-                <div className='nav'>
+        <DashMain>
+            <ContainerDash>
+                <NavBar>
                     <p>Hello, {client?.name}!</p>
 
                     <div className='btn-profile-logout'>
-                        <button onClick={() => handleModalProfileClient()}>Profile</button>
+                        <button className='btn-profile' onClick={() => handleModalProfileClient()}>
+                            Profile
+                        </button>
                         {modalIsOpenProfileClient && (
                             <ModalDefault
                                 callback={() => handleModalProfileClient()}
@@ -69,10 +71,16 @@ const Dashboard = () => {
                                         <p>Loading...</p>
                                     )}
                                     <button
-                                        className='delete-account'
+                                        className='delete'
                                         onClick={() => handleModalDeleteAccount()}
                                     >
                                         Delete Account
+                                    </button>
+                                    <button
+                                        className='cancel'
+                                        onClick={() => handleModalProfileClient()}
+                                    >
+                                        Cancel
                                     </button>
                                 </ModalContainer>
                                 {modalIsOpenDeleteAccount && (
@@ -81,18 +89,17 @@ const Dashboard = () => {
                                         maxWidth={500}
                                     >
                                         <ModalContainer>
-                                            <button
-                                                className='delete-account'
-                                                onClick={deleteClient}
-                                            >
-                                                Yes, I'm sure!
-                                            </button>
-                                            <button
-                                                className='delete-account'
-                                                onClick={() => handleModalDeleteAccount()}
-                                            >
-                                                Cancel
-                                            </button>
+                                            <div className='btn-sure-cancel'>
+                                                <button className='sure' onClick={deleteClient}>
+                                                    Yes, I'm sure!
+                                                </button>
+                                                <button
+                                                    className='cancel'
+                                                    onClick={() => handleModalDeleteAccount()}
+                                                >
+                                                    Cancel
+                                                </button>
+                                            </div>
                                         </ModalContainer>
                                     </ModalDefault>
                                 )}
@@ -103,25 +110,35 @@ const Dashboard = () => {
                             Logout
                         </Link>
                     </div>
-                </div>
-            </div>
+                </NavBar>
+            </ContainerDash>
 
             <section>
                 <div className='title-add'>
                     <p>Contacts</p>
-                    <button onClick={() => handleModalCreateContact()}>Add A New Contact</button>
+                    <button onClick={() => handleModalCreateContact()}>New Contact</button>
                     {modalIsOpenCreateContact && (
                         <ModalDefault callback={() => handleModalCreateContact()} maxWidth={500}>
                             <ModalContainer>
                                 <form className='add-contact' onSubmit={handleSubmit(newContact)}>
                                     <label htmlFor='full_name'>Full Name</label>
-                                    <input type='text' id='full_name' {...register('full_name')} />
+                                    <input
+                                        type='text'
+                                        id='full_name'
+                                        {...register('full_name')}
+                                        required
+                                    />
 
                                     <label htmlFor='email'>E-mail</label>
-                                    <input type='email' id='email' {...register('email')} />
+                                    <input
+                                        type='email'
+                                        id='email'
+                                        {...register('email')}
+                                        required
+                                    />
 
                                     <label htmlFor='phone'>Phone</label>
-                                    <input type='text' id='phone' {...register('phone')} />
+                                    <input type='text' id='phone' {...register('phone')} required />
 
                                     <button type='submit'>Save</button>
                                     <button
@@ -144,79 +161,109 @@ const Dashboard = () => {
                                 <p>Phone: {elem.phone}</p>
                                 <p>E-mail: {elem.email}</p>
 
-                                <button onClick={() => handleModal(elem.id)}>Delete</button>
-                                {modalIsOpen && (
-                                    <ModalDefault callback={() => handleModal} maxWidth={500}>
-                                        <ModalContainer>
-                                            <p>
-                                                Are you sure you want to remove
-                                                <span> {elem.full_name}</span> ? This action is
-                                                permanent!
-                                            </p>
-                                            <button
-                                                className='btn-delete'
-                                                onClick={() => handleDeleteContact(elem.id)}
-                                            >
-                                                Yes, I'm sure!
-                                            </button>
-                                            <button onClick={() => handleModal(elem.id)}>
-                                                Cancel
-                                            </button>
-                                        </ModalContainer>
-                                    </ModalDefault>
-                                )}
-
-                                <button onClick={() => handleModalEditContact()}>Edit</button>
-                                {modalIsOpenEditContact && (
-                                    <ModalDefault
-                                        callback={() => handleModalEditContact()}
-                                        maxWidth={500}
-                                    >
-                                        {editingContact && editingContact.id === elem.id && (
+                                <button onClick={() => handleModal(parseInt(elem.id))}>
+                                    Delete
+                                </button>
+                                {modalIsOpen[parseInt(elem.id)] &&
+                                    modalIsOpen[parseInt(elem.id)] === true && (
+                                        <ModalDefault
+                                            callback={() => handleModal(parseInt(elem.id))}
+                                            maxWidth={500}
+                                        >
                                             <ModalContainer>
-                                                <form
-                                                    key={elem.id}
-                                                    onSubmit={handleSubmit(editContact)}
+                                                <p>
+                                                    Are you sure you want to remove
+                                                    <span> {elem.full_name}</span> ? This action is
+                                                    permanent!
+                                                </p>
+                                                <button
+                                                    className='btn-delete'
+                                                    onClick={() => handleDeleteContact(elem.id)}
                                                 >
-                                                    <input
-                                                        type='text'
-                                                        value={editingContact.full_name}
-                                                        onChange={(e) =>
-                                                            setEditingContact({
-                                                                ...editingContact,
-                                                                full_name: e.target.value,
-                                                            })
-                                                        }
-                                                    />
-                                                    <input
-                                                        type='text'
-                                                        value={editingContact.email}
-                                                        onChange={(e) =>
-                                                            setEditingContact({
-                                                                ...editingContact,
-                                                                email: e.target.value,
-                                                            })
-                                                        }
-                                                    />
-                                                    <input
-                                                        type='text'
-                                                        value={editingContact.phone}
-                                                        onChange={(e) =>
-                                                            setEditingContact({
-                                                                ...editingContact,
-                                                                phone: e.target.value,
-                                                            })
-                                                        }
-                                                    />
-                                                    <button type='submit'>Save</button>
-                                                </form>
+                                                    Yes, I'm sure!
+                                                </button>
+                                                <button
+                                                    onClick={() => handleModal(parseInt(elem.id))}
+                                                >
+                                                    Cancel
+                                                </button>
                                             </ModalContainer>
-                                        )}
-                                        <button onClick={() => setEditingContact(elem)}>
-                                            Edit
-                                        </button>
-                                    </ModalDefault>
-                                )}
+                                        </ModalDefault>
+                                    )}
+
+                                <button onClick={() => handleModalEditContact(parseInt(elem.id))}>
+                                    Edit
+                                </button>
+
+                                {modalIsOpenEditContact[parseInt(elem.id)] &&
+                                    modalIsOpenEditContact[parseInt(elem.id)] === true && (
+                                        <ModalDefault
+                                            callback={() =>
+                                                handleModalEditContact(parseInt(elem.id))
+                                            }
+                                            maxWidth={500}
+                                        >
+                                            {editingContact && editingContact.id === elem.id && (
+                                                <ModalContainer>
+                                                    <form
+                                                        className='edit-form'
+                                                        key={elem.id}
+                                                        onSubmit={handleSubmit(editContact)}
+                                                    >
+                                                        <input
+                                                            type='text'
+                                                            value={editingContact.full_name}
+                                                            onChange={(e) =>
+                                                                setEditingContact({
+                                                                    ...editingContact,
+                                                                    full_name: e.target.value,
+                                                                })
+                                                            }
+                                                        />
+                                                        <input
+                                                            type='text'
+                                                            value={editingContact.email}
+                                                            onChange={(e) =>
+                                                                setEditingContact({
+                                                                    ...editingContact,
+                                                                    email: e.target.value,
+                                                                })
+                                                            }
+                                                        />
+                                                        <input
+                                                            type='text'
+                                                            value={editingContact.phone}
+                                                            onChange={(e) =>
+                                                                setEditingContact({
+                                                                    ...editingContact,
+                                                                    phone: e.target.value,
+                                                                })
+                                                            }
+                                                        />
+                                                        <button
+                                                            type='submit'
+                                                            onClick={() => setEditingContact(elem)}
+                                                        >
+                                                            Save
+                                                        </button>
+                                                        <button
+                                                            type='button'
+                                                            onClick={() =>
+                                                                handleModalEditContact(
+                                                                    parseInt(elem.id)
+                                                                )
+                                                            }
+                                                        >
+                                                            Cancel
+                                                        </button>
+                                                    </form>
+                                                </ModalContainer>
+                                            )}
+                                            <button onClick={() => setEditingContact(elem)}>
+                                                Edit
+                                            </button>
+                                        </ModalDefault>
+                                    )}
                             </CardContact>
                         ))}
                     </ul>
@@ -224,7 +271,7 @@ const Dashboard = () => {
                     <p>You still don't have contacts, let's add them?</p>
                 )}
             </section>
-        </DashContainer>
+        </DashMain>
     )
 }
 

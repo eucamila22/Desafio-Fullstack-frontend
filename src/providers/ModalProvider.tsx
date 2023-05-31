@@ -5,19 +5,19 @@ export interface iProviderProps {
 }
 
 interface iModalContextProps {
-    modalIsOpen: boolean
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
-    handleModal: (id: string) => void
+    modalIsOpen: (boolean | undefined)[]
+    setModalIsOpen: React.Dispatch<React.SetStateAction<(boolean | undefined)[]>>
+    handleModal: (contactId: number) => void
     handleModalDeleteAccount: () => void
     modalIsOpenDeleteAccount: boolean
     setIsOpenDeleteAccount: React.Dispatch<React.SetStateAction<boolean>>
     handleModalCreateContact: () => void
     modalIsOpenCreateContact: boolean
     setIsOpenCreateContact: React.Dispatch<React.SetStateAction<boolean>>
-    handleModalEditContact: () => void
+    handleModalEditContact: (contactId: number) => void
     handleModalProfileClient: () => void
-    modalIsOpenEditContact: boolean
-    setIsOpenEditContact: React.Dispatch<React.SetStateAction<boolean>>
+    modalIsOpenEditContact: (boolean | undefined)[]
+    setIsOpenEditContact: React.Dispatch<React.SetStateAction<(boolean | undefined)[]>>
     modalIsOpenProfileClient: boolean
     setIsOpenProfileClient: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -25,10 +25,11 @@ interface iModalContextProps {
 export const ModalContext = createContext({} as iModalContextProps)
 
 export const ModalProvider = ({ children }: iProviderProps) => {
-    const [modalIsOpen, setIsOpen] = useState(false)
+    const [modalIsOpen, setModalIsOpen] = useState<Array<boolean | undefined>>([])
     const [modalIsOpenDeleteAccount, setIsOpenDeleteAccount] = useState(false)
     const [modalIsOpenCreateContact, setIsOpenCreateContact] = useState(false)
-    const [modalIsOpenEditContact, setIsOpenEditContact] = useState(false)
+    // const [modalIsOpenEditContact, setIsOpenEditContact] = useState(false)
+    const [modalIsOpenEditContact, setIsOpenEditContact] = useState<Array<boolean | undefined>>([])
     const [modalIsOpenProfileClient, setIsOpenProfileClient] = useState(false)
 
     const handleModalProfileClient = () => {
@@ -39,12 +40,12 @@ export const ModalProvider = ({ children }: iProviderProps) => {
         }
     }
 
-    const handleModal = (id: string) => {
-        if (!modalIsOpen) {
-            setIsOpen(true)
-        } else {
-            setIsOpen(false)
-        }
+    const handleModal = (contactId: number) => {
+        setModalIsOpen((prevModalIsOpen) => {
+            const updatedModalIsOpen = [...prevModalIsOpen]
+            updatedModalIsOpen[contactId] = !updatedModalIsOpen[contactId]
+            return updatedModalIsOpen
+        })
     }
 
     const handleModalDeleteAccount = () => {
@@ -63,19 +64,19 @@ export const ModalProvider = ({ children }: iProviderProps) => {
         }
     }
 
-    const handleModalEditContact = () => {
-        if (!modalIsOpenEditContact) {
-            setIsOpenEditContact(true)
-        } else {
-            setIsOpenEditContact(false)
-        }
+    const handleModalEditContact = (contactId: number) => {
+        setIsOpenEditContact((prevModalIsOpen) => {
+            const updatedModalIsOpen = [...prevModalIsOpen]
+            updatedModalIsOpen[contactId] = !updatedModalIsOpen[contactId]
+            return updatedModalIsOpen
+        })
     }
 
     return (
         <ModalContext.Provider
             value={{
                 modalIsOpen,
-                setIsOpen,
+                setModalIsOpen,
                 handleModal,
                 handleModalDeleteAccount,
                 modalIsOpenDeleteAccount,
@@ -88,8 +89,7 @@ export const ModalProvider = ({ children }: iProviderProps) => {
                 handleModalEditContact,
                 handleModalProfileClient,
                 modalIsOpenProfileClient,
-                setIsOpenProfileClient
-                
+                setIsOpenProfileClient,
             }}
         >
             {children}

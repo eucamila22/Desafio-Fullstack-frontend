@@ -17,16 +17,15 @@ export const StyledModal = styled.div<iStyledModalProps>`
     .modal-box {
         position: relative;
         z-index: 1002;
-        width: 90%;
         max-width: 1140px;
         max-height: 700px;
-        max-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : 'unset')};
+        width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : 'unset')};
         padding: 20px;
-        background-color: var(--grey-0);
-        border-radius: 15px;
-        border: 1px solid var(--color-primary);
+        background-color: #c6c7f7;
+        border-radius: 8px;
+        border: 4px solid  #8d8fff;
     }
-    .modal-close {
+    /* .modal-close {
         opacity: 0.5;
         cursor: pointer;
         position: absolute;
@@ -36,5 +35,5 @@ export const StyledModal = styled.div<iStyledModalProps>`
         :hover {
             opacity: 1;
         }
-    }
+    } */
 `
