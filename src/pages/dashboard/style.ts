@@ -28,39 +28,24 @@ export const NavBar = styled.div`
 
     .btn-profile-logout {
         .btn-profile {
-            padding: 5px 10px;
-            background-color: #c6c7f7;
-            border: 1px solid #8d8fff;
-            border-radius: 8px;
             color: #1918a0;
-            font-size: 18px;
+            font-size: 34px;
+            cursor: pointer;
 
             :hover {
-                background-color: #8d8fff;
-                border: 1px solid #8d8fff;
+                color: #741952;
             }
 
             :focus {
-                background-color: #c6c7f7;
+                color: #741952;
             }
         }
 
         a {
-            padding: 5px 10px;
-            background-color: #c6c7f7;
-            border: 1px solid #8d8fff;
-            border-radius: 8px;
-            text-decoration: none;
-            color: #1918a0;
-            font-size: 18px;
+            font-size: 34px;
 
             :hover {
-                background-color: #8d8fff;
-                border: 1px solid #8d8fff;
-            }
-
-            :focus {
-                background-color: #c6c7f7;
+                color: #741952;
             }
         }
     }
@@ -80,24 +65,16 @@ export const DashMain = styled.main`
 
         p {
             color: #1918a0;
-            font-size: 20px;
+            font-size: 24px;
         }
 
-        button {
-            padding: 5px 10px;
-            background-color: #c6c7f7;
-            border: 1px solid #8d8fff;
-            border-radius: 8px;
+        .add-new {
             color: #1918a0;
-            font-size: 18px;
+            font-size: 46px;
+            cursor: pointer;
 
             :hover {
-                background-color: #8d8fff;
-                border: 1px solid #8d8fff;
-            }
-
-            :focus {
-                background-color: #c6c7f7;
+                color: #741952;
             }
         }
     }
@@ -135,7 +112,6 @@ export const DashMain = styled.main`
 `
 export const CardContact = styled.li`
     width: 400px;
-    height: 200px;
     box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;
     list-style: none;
     padding: 20px;
@@ -282,24 +258,42 @@ export const ModalContainer = styled.div`
         }
     }
 
+    .div-btn-profile {
+        display: flex;
+        align-items: center;
+
+        .delete,
+        .download {
+            font-size: 38px;
+            color: #1918a0;
+            margin-right: 40px;
+            cursor: pointer;
+
+            :hover {
+                background-color: #eceaff;
+                border: 2px solid #8d8fff;
+                border-radius: 8px;
+            }
+        }
+    }
+    
+    .btn-cancel {
+        color: #1918a0;
+        font-size: 38px;
+        margin-right: 40px;
+        cursor: pointer;
+
+        :hover {
+            background-color: #eceaff;
+            border: 2px solid #8d8fff;
+            border-radius: 8px;
+        }
+    }
+
     .profile {
         list-style: none;
         font-size: 30px;
         margin-bottom: 20px;
-    }
-    .delete {
-        padding: 5px 10px;
-        background-color: #c6c7f7;
-        border: 1px solid #8d8fff;
-        border-radius: 8px;
-        color: #1918a0;
-        font-size: 24px;
-        margin-right: 20px;
-
-        :hover {
-            background-color: #8d8fff;
-            border: 1px solid #8d8fff;
-        }
     }
 
     .btn-sure-cancel {
@@ -330,6 +324,7 @@ export const ModalContainer = styled.div`
         border-radius: 8px;
         color: #1918a0;
         font-size: 24px;
+        margin-right: 5px;
 
         :hover {
             background-color: #8d8fff;

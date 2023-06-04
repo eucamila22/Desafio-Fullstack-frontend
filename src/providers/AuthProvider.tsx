@@ -4,6 +4,7 @@ import { api } from '../services/api'
 import { useNavigate } from 'react-router-dom'
 import { iRegisterFormValues } from '../components/form/formRegister'
 import { toast } from 'react-toastify'
+// import PDFDocument from 'pdfkit';
 
 interface iAuthProviderProps {
     children: ReactNode
@@ -23,6 +24,7 @@ interface iAuthContextValues {
     client: iClient | undefined
     handleLogout: () => void
     deleteClient: () => Promise<void>
+    // download: () => Promise<void>
 }
 
 export interface iClient {
@@ -137,6 +139,55 @@ export const AuthProvider = ({ children }: iAuthProviderProps) => {
         }
     }
 
+    // const download = async () => {
+    //   const id = localStorage.getItem('IDClient:ID');
+    //   const token = localStorage.getItem('your-personal-schedule:token');
+
+    //   if (!token || !id) {
+    //     console.error('Usuário não autenticado.');
+    //     return;
+    //   }
+
+    //   try {
+    //     const response = await api.get(`/report/${id}`, {
+    //       headers: {
+    //         Authorization: `Bearer ${token}`,
+    //       },
+    //     });
+
+    //     const data = response.data;
+
+    //     const doc = new PDFDocument();
+    //     // Gerar o conteúdo do PDF usando o PDFKit e os dados da resposta da API
+    //     doc.text(`Name: ${data.name}`);
+    //     doc.text(`Email: ${data.email}`);
+
+    //     // Criar um buffer para armazenar o PDF
+    //     const buffers: Buffer[] = [];
+    //     doc.on('data', (buffer) => buffers.push(buffer));
+    //     doc.end();
+
+    //     const pdfBuffer = Buffer.concat(buffers);
+
+    //     // Criar um objeto Blob a partir do buffer do PDF
+    //     const blob = new Blob([pdfBuffer], { type: 'application/pdf' });
+
+    //     // Criar a URL do objeto Blob
+    //     const url = URL.createObjectURL(blob);
+
+    //     // Criar um link para o download do PDF
+    //     const link = document.createElement('a');
+    //     link.href = url;
+    //     link.download = 'documento.pdf';
+    //     link.target = '_blank';
+    //     document.body.appendChild(link);
+    //     link.click();
+    //     document.body.removeChild(link);
+    //   } catch (error) {
+    //     console.error('Erro ao gerar o PDF:', error);
+    //   }
+    // };
+
     return (
         <AuthContext.Provider
             value={{
@@ -148,6 +199,7 @@ export const AuthProvider = ({ children }: iAuthProviderProps) => {
                 handleLogout,
                 clientLoaded,
                 deleteClient,
+                // download
             }}
         >
             {children}

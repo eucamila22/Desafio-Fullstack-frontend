@@ -6,6 +6,11 @@ import { iRegisterFormNewContactValues } from '../../providers/ContactProvider'
 import ModalAuth from '../../hooks/useModal'
 import { ModalDefault } from '../../components/modalDefault'
 import { CardContact, ContainerDash, DashMain, ModalContainer, NavBar } from './style'
+// import { BsFillCloudDownloadFill } from 'react-icons/bs'
+import { IoCloseCircleOutline, IoPersonAdd } from 'react-icons/io5'
+import { TiUserDeleteOutline } from 'react-icons/ti'
+import { HiOutlineLogout } from 'react-icons/hi'
+import { FaUser } from 'react-icons/fa'
 
 const Dashboard = () => {
     const { client, handleLogout, deleteClient } = useAuth()
@@ -50,9 +55,10 @@ const Dashboard = () => {
                     <p>Hello, {client?.name}!</p>
 
                     <div className='btn-profile-logout'>
-                        <button className='btn-profile' onClick={() => handleModalProfileClient()}>
-                            Profile
-                        </button>
+                        <FaUser
+                            className='btn-profile'
+                            onClick={() => handleModalProfileClient()}
+                        />
                         {modalIsOpenProfileClient && (
                             <ModalDefault
                                 callback={() => handleModalProfileClient()}
@@ -70,18 +76,17 @@ const Dashboard = () => {
                                     ) : (
                                         <p>Loading...</p>
                                     )}
-                                    <button
-                                        className='delete'
-                                        onClick={() => handleModalDeleteAccount()}
-                                    >
-                                        Delete Account
-                                    </button>
-                                    <button
-                                        className='cancel'
-                                        onClick={() => handleModalProfileClient()}
-                                    >
-                                        Cancel
-                                    </button>
+                                    <div className='div-btn-profile'>
+                                        <TiUserDeleteOutline
+                                            className='delete'
+                                            onClick={() => handleModalDeleteAccount()}
+                                        />
+                                        <IoCloseCircleOutline
+                                            onClick={() => handleModalProfileClient()}
+                                            className='btn-cancel'
+                                        />
+                                        {/* <BsFillCloudDownloadFill className='download' onClick={download} /> */}
+                                    </div>
                                 </ModalContainer>
                                 {modalIsOpenDeleteAccount && (
                                     <ModalDefault
@@ -93,21 +98,18 @@ const Dashboard = () => {
                                                 <button className='sure' onClick={deleteClient}>
                                                     Yes, I'm sure!
                                                 </button>
-                                                <button
-                                                    className='cancel'
+                                                <IoCloseCircleOutline
+                                                    className='btn-cancel'
                                                     onClick={() => handleModalDeleteAccount()}
-                                                >
-                                                    Cancel
-                                                </button>
+                                                />
                                             </div>
                                         </ModalContainer>
                                     </ModalDefault>
                                 )}
                             </ModalDefault>
                         )}
-
                         <Link to='/' onClick={handleLogout}>
-                            Logout
+                            <HiOutlineLogout />
                         </Link>
                     </div>
                 </NavBar>
@@ -116,7 +118,7 @@ const Dashboard = () => {
             <section>
                 <div className='title-add'>
                     <p>Contacts</p>
-                    <button onClick={() => handleModalCreateContact()}>New Contact</button>
+                    <IoPersonAdd className='add-new' onClick={() => handleModalCreateContact()} />
                     {modalIsOpenCreateContact && (
                         <ModalDefault callback={() => handleModalCreateContact()} maxWidth={500}>
                             <ModalContainer>
