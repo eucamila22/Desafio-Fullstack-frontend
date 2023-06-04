@@ -28,14 +28,14 @@ interface iAuthContextValues {
 }
 
 export interface iClient {
-    id: string
+    id: number
     name: string
     email: string
     phone: string
     contacts: iContacts[]
 }
 export interface iContacts {
-    client: string
+    client: iClient
     id: string
     full_name: string
     email: string
